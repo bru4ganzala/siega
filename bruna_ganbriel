@@ -1,0 +1,131 @@
+import heapq
+
+class Hospital:
+    def __init__(self):
+        # Inicializa a fila de pacientes e o dicionário de prioridades para as enfermidades
+        self.fila = []  # Fila de prioridade utilizando heapq
+        self.prioridades = {'Crítico': 1, 'Grave': 2, 'Leve': 3}  # Prioridades definidas: 'Crítico' tem maior prioridade
+
+    def menu(self):
+        # Exibe as opções principais para o usuário interagir
+        print("\n------------ MENU ------------")
+        print("1 - Agendar Atendimento")
+        print("2 - Chamar Próximo Paciente")
+        print("3 - Excluir Agendamentos")
+        print("4 - Sair do Programa")
+        print("5 - Exibir Lista")
+
+    def menu_sintomas(self):
+        # Exibe as opções de sintomas ou gravidade da enfermidade
+        print("\n--- Digite a enfermidade ---")
+        print("1 - Crítico")
+        print("2 - Grave")
+        print("3 - Leve")
+
+    def agendar(self, nome, enfermidade):
+        # Função para agendar um paciente na fila de espera
+        # Recebe o nome e a enfermidade do paciente, determina a prioridade
+        prioridade = self.prioridades[enfermidade]
+        
+        # Adiciona o paciente à fila com base na prioridade, usando heapq.heappush
+        heapq.heappush(self.fila, (prioridade, nome))
+        
+        # Exibe uma mensagem confirmando o agendamento do paciente
+        print(f"\nPaciente {nome}:\nEnfermidade {enfermidade}\nPrioridade {prioridade}.")
+
+    def chamar_prox_fila(self):
+        # Função para chamar o próximo paciente da fila de espera
+        # Verifica se há pacientes na fila antes de prosseguir
+        if not self.fila:
+            print("\nFila vazia.")  # Caso a fila esteja vazia, exibe uma mensagem
+            return
+        
+        # Remove e retorna o paciente com maior prioridade (menor valor)
+        prioridade, nome = heapq.heappop(self.fila)
+        
+        # Exibe o nome e a prioridade do paciente que foi chamado
+        print(f"\nPACIENTE: {nome}\nPrioridade {prioridade}.")
+
+    def excluir_fila(self):
+        # Função para excluir todos os pacientes da fila
+        # Verifica se há pacientes na fila antes de excluir
+        if not self.fila:
+            print("\nFila vazia.")  # Caso a fila esteja vazia, exibe uma mensagem
+            return
+        
+        # Limpa todos os pacientes da fila
+        self.fila.clear()
+        
+        # Confirma que a fila foi excluída com sucesso
+        print("\nFila excluída com sucesso.")
+
+    def listar_fila(self):
+        # Função para listar toda a fila
+        if not self.fila:
+            print("\nFila vazia.")  # Caso a fila esteja vazia, exibe uma mensagem
+            return
+        
+        self.fila = sorted(self.fila, key=lambda x: x[0])
+        
+        print("\n\n")
+        print("---- FILA DE PRIORIDADES ----")
+
+        for prioridade, nome in self.fila:
+            print(f"\nPaciente: {nome}, Prioridade: {prioridade}")
+
+def main():
+    # Função principal do programa
+    hospital = Hospital()  # Cria uma instância do hospital
+
+    while True:
+        # Exibe o menu principal para o usuário escolher uma ação
+        hospital.menu()
+        
+        # Solicita ao usuário que selecione uma opção do menu
+        opcao = input("Selecione uma opção: ")
+
+        # Processa a opção escolhida pelo usuário
+        match opcao:
+            case '1':
+                # Opção para agendar atendimento
+                nome = input("\nInsira o nome do paciente: ")
+
+                while True:
+                    # Exibe o menu de sintomas/gravidade para o usuário escolher
+                    hospital.menu_sintomas()
+                    sintoma = input("Selecione uma opção: ")
+                    
+                    # Dependendo da escolha, agenda o paciente com a gravidade correspondente
+                    match sintoma:
+                        case '1':
+                            hospital.agendar(nome, 'Crítico')  # Agendar como paciente Crítico
+                            break
+                        case '2':
+                            hospital.agendar(nome, 'Grave')  # Agendar como paciente Grave
+                            break
+                        case '3':
+                            hospital.agendar(nome, 'Leve')  # Agendar como paciente Leve
+                            break
+                        case _:
+                            # Caso a opção não seja válida, solicita ao usuário tentar novamente
+                            print("Opção inválida! Tente novamente.")
+            case '2':
+                # Opção para chamar o próximo paciente da fila
+                hospital.chamar_prox_fila()
+            case '3':
+                # Opção para excluir todos os pacientes da fila
+                hospital.excluir_fila()
+            case '4':
+                # Opção para sair do programa
+                print("\nEncerrando o programa. Até mais!")
+                break
+            case '5':
+                # Opção para exibir toda a lista
+                hospital.listar_fila()
+            case _:
+                # Caso o usuário digite uma opção inválida, exibe uma mensagem
+                print("\nOpção inválida! Tente novamente.")
+
+# Inicia o programa quando o script é executado
+if __name__ == "__main__":
+    main()
